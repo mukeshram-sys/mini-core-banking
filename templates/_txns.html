@@ -1,0 +1,20 @@
+<div class="glass tablewrap rise" style="--d:5">
+<table>
+  <thead><tr><th>Date</th><th>Type</th><th>Other account</th><th class="num">Amount</th><th class="num">Balance</th></tr></thead>
+  <tbody>
+  {% for t in txns %}
+    {% set credit = t.kind in ('deposit', 'transfer_in') %}
+    <tr style="--i:{{ loop.index0 }}">
+      <td>{{ t.created_at }}</td>
+      <td><span class="kind {{ 'in' if credit else 'out' }}">{{ t.kind.replace('_', ' ') }}</span>
+          {% if t.flagged %}<span class="flag">flagged</span>{% endif %}</td>
+      <td>{{ t.counterparty or '-' }}</td>
+      <td class="num"><span class="kind amt {{ 'in' if credit else 'out' }}">{{ '+' if credit else '-' }}{{ t.amount|rupees }}</span></td>
+      <td class="num">{{ t.balance_after|rupees }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="5" class="empty">No transactions yet. Make a deposit to get started.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>

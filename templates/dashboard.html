@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block body %}
+<section class="hero">
+  <div class="tilt rise" style="--d:1">
+    <div class="bankcard">
+      <div class="chip"></div>
+      <div class="cardno">{{ acc.account_no[:4] }} {{ acc.account_no[4:8] }} {{ acc.account_no[8:] }}</div>
+      <div class="cardrow">
+        <div><small>Account holder</small>{{ g.user.full_name }}</div>
+        <div><small>Status</small>{{ acc.status|capitalize }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="balance rise" style="--d:2">
+    <small>Available balance</small>
+    <h1 data-count="{{ acc.balance }}">{{ acc.balance|rupees }}</h1>
+    <span class="pill {{ '' if acc.status == 'active' else 'off' }}">{{ 'Account active' if acc.status == 'active' else 'Account frozen' }}</span>
+  </div>
+</section>
+
+<section class="actions">
+  <form method="post" action="{{ url_for('deposit') }}" class="glass act dep stack rise" style="--d:3">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <h2>Deposit</h2>
+    <label>Amount <input name="amount" inputmode="decimal" placeholder="0.00" required></label>
+    <button>Add money</button>
+  </form>
+  <form method="post" action="{{ url_for('withdraw') }}" class="glass act wit stack rise" style="--d:4">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <h2>Withdraw</h2>
+    <label>Amount <input name="amount" inputmode="decimal" placeholder="0.00" required></label>
+    <button>Take money out</button>
+  </form>
+  <form method="post" action="{{ url_for('transfer') }}" class="glass act xfer stack rise" style="--d:5">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <h2>Transfer</h2>
+    <label>To account no. <input name="to_account" required></label>
+    <label>Amount <input name="amount" inputmode="decimal" placeholder="0.00" required></label>
+    <button>Send money</button>
+  </form>
+</section>
+
+<h2 class="rise" style="--d:6">Recent transactions</h2>
+{% include "_txns.html" %}
+{% endblock %}

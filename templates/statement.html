@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block body %}
+<h1 class="rise">Statement</h1>
+<p class="rise" style="--d:1">Account {{ acc.account_no }}, last 200 transactions</p>
+{% include "_txns.html" %}
+<p><a href="{{ url_for('dashboard') }}">Back to dashboard</a></p>
+{% endblock %}

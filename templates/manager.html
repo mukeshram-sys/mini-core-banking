@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block body %}
+<h1 class="rise">Branch overview</h1>
+<div class="glass tablewrap rise" style="--d:1"><table>
+  <thead><tr><th>Account</th><th>Customer</th><th class="num">Balance</th><th>Status</th><th>Failed logins</th><th></th></tr></thead>
+  <tbody>
+  {% for a in accounts %}
+    <tr>
+      <td>{{ a.account_no }}</td><td>{{ a.full_name }} ({{ a.username }})</td>
+      <td class="num">{{ a.balance|rupees }}</td><td><span class="pill {{ '' if a.status == 'active' else 'off' }}">{{ a.status }}</span></td><td>{{ a.failed_attempts }}</td>
+      <td>
+        <form method="post" action="{{ url_for('toggle', account_id=a.id) }}">
+          <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+          <button class="link">{{ 'Unfreeze' if a.status == 'frozen' else 'Freeze' }}</button>
+        </form>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6">No customer accounts yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+
+<h2>Flagged transactions (Rs 50,000 and above)</h2>
+<div class="glass tablewrap rise" style="--d:2"><table>
+  <thead><tr><th>Date</th><th>Account</th><th>Type</th><th class="num">Amount</th></tr></thead>
+  <tbody>
+  {% for t in flagged %}
+    <tr><td>{{ t.created_at }}</td><td>{{ t.account_no }}</td><td>{{ t.kind.replace('_',' ') }}</td><td class="num">{{ t.amount|rupees }}</td></tr>
+  {% else %}
+    <tr><td colspan="4">Nothing flagged.</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% endblock %}

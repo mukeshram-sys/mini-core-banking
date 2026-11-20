@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Mini Core Bank{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<header class="bar">
+  <a class="brand" href="{{ url_for('index') }}">Mini Core Bank</a>
+  {% if g.user %}
+  <nav>
+    <span class="who">{{ g.user.full_name }}</span>
+    {% if g.user.role == 'customer' %}<a href="{{ url_for('statement') }}">Statement</a>{% endif %}
+    <form method="post" action="{{ url_for('logout') }}">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <button class="link">Log out</button>
+    </form>
+  </nav>
+  {% endif %}
+</header>
+<div class="toasts" role="status">
+  {% for m in get_flashed_messages() %}
+    {% set good = ('successful' in m) or ('created' in m) or (' now ' in m) %}
+    <p class="toast {{ '' if good else 'bad' }}">{{ m }}</p>
+  {% endfor %}
+</div>
+<main>{% block body %}{% endblock %}</main>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
